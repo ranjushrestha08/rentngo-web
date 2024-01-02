@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthApiController extends Controller
 {
-    public function register(Request $request)
+    public function signup(Request $request)
     {
         // Validation logic here
 
