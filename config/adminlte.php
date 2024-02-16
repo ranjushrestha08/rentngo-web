@@ -307,6 +307,10 @@ return [
             'text' => 'search',
         ],
         [
+            'text' => 'Vehicle List',
+            'route' => 'vehicles.index',
+        ],
+        [
             'text' => 'Vehicle Categories List',
             'route' => 'vehicleCategories.index',
         ],

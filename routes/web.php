@@ -21,3 +21,4 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::resource('vehicleCategories', App\Http\Controllers\VehicleCategoryController::class);
+Route::resource('vehicles', App\Http\Controllers\VehicleController::class);

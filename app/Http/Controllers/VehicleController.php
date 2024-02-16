@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Vehicle;
+use App\Models\VehicleCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class VehicleController extends Controller
 {
@@ -12,7 +14,8 @@ class VehicleController extends Controller
      */
     public function index()
     {
-        //
+        $vehicles = Vehicle::all();
+        return view("vehicles.index", compact("vehicles"));
     }
 
     /**
@@ -20,7 +23,8 @@ class VehicleController extends Controller
      */
     public function create()
     {
-        //
+        $categories = VehicleCategory::all();
+        return view("vehicles.create", compact("categories"));
     }
 
     /**
@@ -28,8 +32,29 @@ class VehicleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'fuel_type' => 'required|string',
+            'model' => 'required|string',
+            'cost_per_hour' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'vehicle_category_id' => 'required|exists:vehicle_categories,id',
+        ]);
+
+        $imagePath = $request->file('image')->store('vehicle_images', 'public');
+
+        $vehicle = new Vehicle([
+            'fuel_type' => $request->input('fuel_type'),
+            'model' => $request->input('model'),
+            'cost_per_hour' => $request->input('cost_per_hour'),
+            'image_url' => Storage::url($imagePath),
+            'vehicle_category_id' => $request->input('vehicle_category_id'),
+        ]);
+
+        $vehicle->save();
+
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle created successfully');
     }
+
 
     /**
      * Display the specified resource.

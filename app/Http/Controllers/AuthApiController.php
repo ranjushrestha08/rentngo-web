@@ -20,16 +20,17 @@ class AuthApiController extends Controller
 
         $token = $user->createToken('auth_token')->accessToken;
 
-        return response()->json(['token' => $token], 201);
+        
+
+        return response()->json(['token' => $token, 'status' => "success"], 201);
     }
 
     public function login(Request $request)
     {
-        // Login logic here
 
         if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
             $token = Auth::user()->createToken('auth_token')->accessToken;
-            return response()->json(['token' => $token]);
+            return response()->json(['token' => $token, 'status' => "success"]);
         }
 
         return response()->json(['message' => 'Invalid credentials'], 401);
@@ -39,11 +40,11 @@ class AuthApiController extends Controller
     {
         $request->user()->token()->revoke();
 
-        return response()->json(['message' => 'Logged out']);
+        return response()->json(['message' => 'Logged out', 'status' => "success"]);
     }
 
     public function user(Request $request)
     {
-        return response()->json(['user' => $request->user()]);
+        return response()->json(['user' => $request->user(), 'status' => "success"]);
     }
 }
