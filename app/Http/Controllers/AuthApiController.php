@@ -11,10 +11,10 @@ class AuthApiController extends Controller
     public function signup(Request $request)
     {
         // Validation logic here
-
         $user = User::create([
             'name' => $request->input('name'),
             'email' => $request->input('email'),
+            'phone' => $request->input('phone'),
             'password' => bcrypt($request->input('password')),
         ]);
 
@@ -22,13 +22,13 @@ class AuthApiController extends Controller
 
         
 
-        return response()->json(['token' => $token, 'status' => "success"], 201);
+        return response()->json(['token' => $token, 'status' => "success"], 200);
     }
 
     public function login(Request $request)
     {
 
-        if (Auth::attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+        if (Auth::attempt(['email' => $request->input('email'),'password' => $request->input('password')])) {
             $token = Auth::user()->createToken('auth_token')->accessToken;
             return response()->json(['token' => $token, 'status' => "success"]);
         }

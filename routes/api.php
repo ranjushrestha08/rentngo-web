@@ -23,8 +23,12 @@ use App\Http\Controllers\ApiController;
 
 Route::post('signup', [AuthApiController::class, 'signup']);
 Route::post('login', [AuthApiController::class, 'login']);
-Route::post('logout', [AuthApiController::class, 'logout'])->middleware('auth:api');
-Route::get('user', [AuthApiController::class, 'user'])->middleware('auth:api');
-Route::get('user', [AuthApiController::class, 'user'])->middleware('auth:api');
-Route::get('vehicles', [ApiController::class, 'vehicles']);
 
+
+Route::middleware('áuth:api')->group(function(){
+Route::post('logout', [AuthApiController::class, 'logout']);
+Route::get('user', [AuthApiController::class, 'user']);
+Route::get('user', [AuthApiController::class, 'user']);
+Route::get('vehicles', [ApiController::class, 'getAllVehicles']);
+
+});

@@ -12,7 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
-            $table->id();
+            $table->id('payment_id');
+            $table ->integer("transcation_code");
+            $table ->double("payment_amount");
+            $table ->string("payment_status");
+            $table ->date("payment_date");
+            $table->unsignedBigInteger('rental_id');
+            $table ->foreign("rental_id")->references('rental_id')->on('rentals');
             $table->timestamps();
         });
     }
