@@ -12,17 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('rentals', function (Blueprint $table) {
-            $table->id('rental_id');
-            $table->date('start_date');
+            $table->id();            $table->date('start_date');
             $table->date('end_date');
             $table->unsignedBigInteger('drop_location_id');
-            $table->foreign('drop_location_id')->references('location_id')->on('locations');
+            $table->foreign('drop_location_id')->references('id')->on('locations');
             $table->unsignedBigInteger('pick_location_id');
-            $table->foreign('pick_location_id')->references('location_id')->on('locations');
+            $table->foreign('pick_location_id')->references('id')->on('locations');
             $table->unsignedBigInteger('vehicle_id');
-            $table->foreign('vehicle_id')->references('vehicle_id')->on('vehicles');
+            $table->foreign('vehicle_id')->references('id')->on('vehicles');
             $table->unsignedBigInteger('user_id');
-            $table->foreign('user_id')->references('user_id')->on('users');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->double('total_cost');
             $table->string('rental_status');
             $table->timestamps();

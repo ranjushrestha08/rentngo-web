@@ -26,9 +26,21 @@ Route::post('login', [AuthApiController::class, 'login']);
 
 
 Route::middleware('áuth:api')->group(function(){
-Route::post('logout', [AuthApiController::class, 'logout']);
-Route::get('user', [AuthApiController::class, 'user']);
-Route::get('user', [AuthApiController::class, 'user']);
-Route::get('vehicles', [ApiController::class, 'getAllVehicles']);
+    Route::post('logout', [AuthApiController::class, 'logout']);
+    Route::get('user', [AuthApiController::class, 'user']);
+    Route::get('user', [AuthApiController::class, 'user']);
+    Route::get('vehicles', [ApiController::class, 'getAllVehicles']);
+
+
+    Route::get('/getVehicles', [ApiController::class, 'getVehicles']);
+    Route::get('/getVehiclesByCategory', [ApiController::class, 'getVehiclesByCategory']);
+    Route::get('/getVehicleDetail/{id}', [ApiController::class, 'getVehicle']);
+    Route::get('/getCategories', [ApiController::class, 'getCategories']);
+    Route::post('/rent/vehicle', [ApiController::class, 'rentVehicle']);
+    Route::get('/rent-user-details/{id}', [ApiController::class, 'getUserRentalDetails']);
+    Route::get('/user/rentals', [ApiController::class, 'getUserRentals']);
+    Route::post('/user/update/rentals-status/{id}', [ApiController::class, 'updateRentalStatus']);
+    Route::post('/user/update/rentals/{id}', [ApiController::class, 'updateRental']);
+
 
 });

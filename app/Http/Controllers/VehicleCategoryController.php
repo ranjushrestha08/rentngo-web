@@ -45,7 +45,7 @@ class VehicleCategoryController extends Controller
      */
     public function show($id)
     {
-        $info['item'] = VehicleCategory::findOrFail($id);
+        $info['category'] = VehicleCategory::findOrFail($id);
         return view('vehicleCategories.show', $info);
     }
 
@@ -54,7 +54,7 @@ class VehicleCategoryController extends Controller
      */
     public function edit($id)
     {
-        $info['item'] = VehicleCategory::findOrFail($id);
+        $info['category'] = VehicleCategory::findOrFail($id);
         return view('vehicleCategories.edit', $info);
     }
 

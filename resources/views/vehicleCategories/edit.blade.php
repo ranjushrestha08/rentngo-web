@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Create Vehicle Category</h2>
+    <h2>Edit Vehicle Category</h2>
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
@@ -18,13 +18,14 @@
         </ul>
     </div>
     @endif
-    <form action="{{ route('vehicleCategories.store') }}" method="post" enctype="multipart/form-data">
+    <form action="{{ route('vehicleCategories.update', $category->id) }}" method="post" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
         <div class="form-group">
             <label for="name">Category Name</label>
-            <input type="text" name="name" id="name" class="form-control" value="{{ old('name') }}">
+            <input type="text" name="name" id="name" class="form-control" value="{{ old('name', $category->name) }}">
         </div>
-        <button type="submit" class="btn btn-primary">Create Vehicle Category</button>
+        <button type="submit" class="btn btn-primary">Update Vehicle Category</button>
     </form>
 </div>
 @endsection

@@ -14,13 +14,17 @@
     @endif
     <form action="{{ route('vehicles.store') }}" method="post" enctype="multipart/form-data">
         @csrf
+        
+        <div class="form-group">
+            <label for="vehicle_name">Vehicle Name</label>
+            <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ old('vehicle_name') }}">
+        </div>
         <div class="form-group">
             <label for="fuel_type">Fuel Type</label>
             <select name="fuel_type" id="fuel_type" class="form-control">
                 <option value="Petrol" {{ old('fuel_type')=='Petrol' ? 'selected' : '' }}>Petrol</option>
                 <option value="Diesel" {{ old('fuel_type')=='Diesel' ? 'selected' : '' }}>Diesel</option>
                 <option value="Electric" {{ old('fuel_type')=='Electric' ? 'selected' : '' }}>Electric</option>
-                <!-- Add other fuel types as needed -->
             </select>
         </div>
         <div class="form-group">
@@ -32,9 +36,14 @@
             <input type="text" name="cost_per_hour" id="cost_per_hour" class="form-control"
                 value="{{ old('cost_per_hour') }}">
         </div>
+
         <div class="form-group">
             <label for="image">Image</label>
-            <input type="file" name="image" id="image" class="form-control" value="{{ old('image') }}">
+            <input type="file" name="image_url" id="image_url" class="form-control" value="{{ old('image_url') }}">
+        </div>
+        <div class="form-group">
+            <label for="vehicle_description">Vehicle Description</label>
+            <input type="text" name="vehicle_description" id="vehicle_description" class="form-control" value="{{ old('vehicle_description') }}">
         </div>
         <div class="form-group">
             <label for="vehicle_category_id">Vehicle Category</label>

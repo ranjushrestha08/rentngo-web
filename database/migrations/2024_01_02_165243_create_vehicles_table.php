@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('vehicles', function (Blueprint $table) {
-            $table->id('vehicle_id');
+            $table->id();
             $table->string('vehicle_name');
             $table->enum('fuel_type',['Petrol','Diesel','Electric']);
             $table->string('model');
@@ -19,7 +19,7 @@ return new class extends Migration {
             $table->string('image_url');
             $table->string('vehicle_description');
             $table->unsignedBigInteger('vehicle_category_id');
-            $table->foreign('vehicle_category_id')->references('vehicle_category_id')->on('vehicle_categories');
+            $table->foreign('vehicle_category_id')->references('id')->on('vehicle_categories');
             $table->timestamps();
         });
     }

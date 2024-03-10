@@ -36,18 +36,20 @@ class VehicleController extends Controller
             'fuel_type' => 'required|string',
             'model' => 'required|string',
             'cost_per_hour' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
             'vehicle_category_id' => 'required|exists:vehicle_categories,id',
         ]);
 
-        $imagePath = $request->file('image')->store('vehicle_images', 'public');
+        $imagePath = $request->file('image_url')->store('vehicle_images', 'public');
 
         $vehicle = new Vehicle([
             'fuel_type' => $request->input('fuel_type'),
+            'vehicle_name' => $request->input('vehicle_name'),
             'model' => $request->input('model'),
             'cost_per_hour' => $request->input('cost_per_hour'),
             'image_url' => Storage::url($imagePath),
             'vehicle_category_id' => $request->input('vehicle_category_id'),
+            'vehicle_description' => $request->input('vehicle_description'),
         ]);
 
         $vehicle->save();

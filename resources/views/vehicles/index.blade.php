@@ -12,7 +12,7 @@
     <div class="col-md-12">
         <div class="card">
             <div class="card-body">
-                <table class="table">
+                <table class="table table-bordered">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -22,17 +22,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($vehicles as $category)
+                        @foreach($vehicles as $vehicle)
                         <tr>
-                            <td>{{ $category->id }}</td>
-                            <td><img width=100 src="{{asset($category->image_url)}}" alt=""></td>
-                            <td>{{ $category->model }}</td>
+                            <td>{{ $vehicle->id }}</td>
+                            <td><img width=100 src="{{asset($vehicle->image_url)}}" alt=""></td>
+                            <td>{{ $vehicle->name }}</td>
                             <td>
-                                <a href="{{ route('vehicles.show', $category->id) }}"
+                                <a class="mx-1" href="{{ route('vehicles.show', $vehicle->id) }}"
                                     class="btn btn-primary btn-sm">View</a>
-                                <a href="{{ route('vehicles.edit', $category->id) }}"
+                                <a class="mx-1" href="{{ route('vehicles.edit', $vehicle->id) }}"
                                     class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('vehicles.destroy', $category->id) }}" method="POST"
+                                <form action="{{ route('vehicles.destroy', $vehicle->id) }}" method="POST"
                                     style="display: inline;">
                                     @csrf
                                     @method('DELETE')
