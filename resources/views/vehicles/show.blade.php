@@ -1,4 +1,10 @@
-@extends('layouts.app')
+@extends('adminlte::page')
+
+@section('title', 'Vehicles')
+
+@section('content_header')
+<h1>Vehicles</h1>
+@stop
 
 @section('content')
 <div class="container">
@@ -35,7 +41,7 @@
             </div>
             <div class="form-group">
                 <label for="vehicle_category">Vehicle Category:</label>
-                <p>{{ $vehicle->category->name }}</p>
+                <p>{{ $vehicle?->category?->name }}</p>
             </div>
         </div>
     </div>

@@ -26,7 +26,7 @@
                         <tr>
                             <td>{{ $vehicle->id }}</td>
                             <td><img width=100 src="{{asset($vehicle->image_url)}}" alt=""></td>
-                            <td>{{ $vehicle->name }}</td>
+                            <td>{{ $vehicle->vehicle_name }}</td>
                             <td>
                                 <a class="mx-1" href="{{ route('vehicles.show', $vehicle->id) }}"
                                     class="btn btn-primary btn-sm">View</a>

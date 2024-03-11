@@ -1,4 +1,10 @@
-@extends('layouts.app')
+@extends('adminlte::page')
+
+@section('title', 'Vehicles')
+
+@section('content_header')
+<h1>Vehicles</h1>
+@stop
 
 @section('content')
 <div class="container">
@@ -17,7 +23,7 @@
         @method('PUT')
         <div class="form-group">
             <label for="vehicle_name">Vehicle Name</label>
-            <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{ $vehicle->vehicle_name }}">
+            <input type="text" name="vehicle_name" id="vehicle_name" class="form-control" value="{{old('vehicle_name', $vehicle->vehicle_name)}}">
         </div>
         <div class="form-group">
             <label for="fuel_type">Fuel Type</label>
@@ -29,11 +35,11 @@
         </div>
         <div class="form-group">
             <label for="model">Model</label>
-            <input type="text" name="model" id="model" class="form-control" value="{{ $vehicle->model }}">
+            <input type="text" name="model" id="model" class="form-control" value="{{ old('model',$vehicle->model) }}">
         </div>
         <div class="form-group">
             <label for="cost_per_hour">Cost per Hour</label>
-            <input type="text" name="cost_per_hour" id="cost_per_hour" class="form-control" value="{{ $vehicle->cost_per_hour }}">
+            <input type="text" name="cost_per_hour" id="cost_per_hour" class="form-control" value="{{ old('cost_per_hour', $vehicle->cost_per_hour) }}">
         </div>
         <div class="form-group">
             <label for="image">Image</label>
@@ -44,7 +50,7 @@
         </div>
         <div class="form-group">
             <label for="vehicle_description">Vehicle Description</label>
-            <input type="text" name="vehicle_description" id="vehicle_description" class="form-control" value="{{ $vehicle->vehicle_description }}">
+            <input type="text" name="vehicle_description" id="vehicle_description" class="form-control" value="{{ old('description', $vehicle->vehicle_description) }}">
         </div>
         <div class="form-group">
             <label for="vehicle_category_id">Vehicle Category</label>

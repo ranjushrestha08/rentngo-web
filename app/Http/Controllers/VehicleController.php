@@ -34,10 +34,12 @@ class VehicleController extends Controller
     {
         $request->validate([
             'fuel_type' => 'required|string',
+            'vehicle_name' => 'required|string',
             'model' => 'required|string',
             'cost_per_hour' => 'required|string',
-            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:4048',
+            'image_url' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4048',
             'vehicle_category_id' => 'required|exists:vehicle_categories,id',
+            'vehicle_description' => 'required|string',
         ]);
 
         $imagePath = $request->file('image_url')->store('vehicle_images', 'public');
@@ -54,39 +56,55 @@ class VehicleController extends Controller
 
         $vehicle->save();
 
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle created successfully');
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle added successfully');
     }
 
 
     /**
      * Display the specified resource.
      */
-    public function show(Vehicle $vehicle)
+    public function show($id)
     {
-        //
+         $info['vehicle'] = Vehicle::findOrFail($id);
+        return view('vehicles.show', $info);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Vehicle $vehicle)
+    public function edit($id)
     {
-        //
+       $info['vehicle'] = Vehicle::findOrFail($id);
+               $info['categories'] = VehicleCategory::all();
+
+        return view('vehicles.edit', $info);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Vehicle $vehicle)
+    public function update(Request $request, $id)
     {
-        //
+       $request->validate([
+
+        ]);
+        $data = $request->all();
+        $Vehicle = Vehicle::findOrFail($id);
+        $Vehicle->update($data);
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle updated successfully!');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Vehicle $vehicle)
+    public function destroy($id)
     {
-        //
+        try {
+            $Vehicle = Vehicle::findOrFail($id);
+            $Vehicle->delete();
+            return redirect()->route('vehicles.index')->with('success', 'Vehicle deleted successfully!');
+        } catch (\Exception $e) {
+            return redirect()->back();
+        }
     }
 }

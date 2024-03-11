@@ -12,10 +12,10 @@ class AuthApiController extends Controller
     {
         // Validation logic here
         $user = User::create([
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'phone' => $request->input('phone'),
-            'password' => bcrypt($request->input('password')),
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => bcrypt($request->password),
         ]);
 
         $token = $user->createToken('auth_token')->accessToken;
