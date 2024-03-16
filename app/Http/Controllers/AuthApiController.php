@@ -5,35 +5,68 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator; 
 
 class AuthApiController extends Controller
 {
     public function signup(Request $request)
     {
         // Validation logic here
-        $user = User::create([
+        // $request->validate([
+        //     'name' => 'required|string',
+        //     'email' => 'required|email|unique:users,email',
+        //     'phone' => 'required|string|unique:users,phone', 
+        //     'password' => 'required|min:8',
+        //     'role' => 'required|string'
+        // ]);
+
+       $validator = Validator::make($request->all(), [
+        'name' => 'required|string',
+        'email' => 'required|email|unique:users,email',
+        'phone' => 'required|string|unique:users,phone',
+        'password' => 'required|min:8',
+        'role' => 'required|string'
+        ]);
+
+         if ($validator->fails()) {
+        return response()->json(['errors' => $validator->errors()], 422);
+    }
+        // $user = User::create([
+        //     'name' => $request->name,
+        //     'email' => $request->email,
+        //     'phone' => $request->phone,
+        //     'password' => bcrypt($request->password),
+        //     'role' => $request->role,
+        // ]);
+        
+ $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'password' => bcrypt($request->password),
+            'role' => $request->role,
         ]);
 
         $token = $user->createToken('auth_token')->accessToken;
 
         
 
-        return response()->json(['token' => $token, 'status' => "success"], 200);
+        return response()->json([ 'status' => "success", 'data' => $user, 'token' => $token], 200);
     }
 
     public function login(Request $request)
     {
 
-        if (Auth::attempt(['email' => $request->input('email'),'password' => $request->input('password')])) {
-            $token = Auth::user()->createToken('auth_token')->accessToken;
-            return response()->json(['token' => $token, 'status' => "success"]);
-        }
+        $user = [];
 
-        return response()->json(['message' => 'Invalid credentials'], 401);
+        if (Auth::attempt(['email' => $request->input('email'),'password' => $request->input('password')])) {
+            $user = Auth::user();
+            $token = $user->createToken('auth_token')->accessToken;
+
+
+
+         return response()->json([ 'status' => "success", 'data' => $user, 'token' => $token], 200);
+        }return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     public function logout(Request $request)

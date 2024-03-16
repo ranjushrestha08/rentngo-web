@@ -107,7 +107,7 @@ return [
     */
 
     'preloader' => [
-        'enabled' => true,
+        'enabled' => false,
         'img' => [
             'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
             'alt' => 'AdminLTE Preloader Image',
@@ -309,12 +309,22 @@ return [
         [
             'text' => 'Vehicle List',
             'route' => 'vehicles.index',
+            // 'icon'=> 'fa-fw fas fa-truck-pickup',
         ],
         [
             'text' => 'Vehicle Categories List',
             'route' => 'vehicleCategories.index',
         ],
-
+        [
+            'text' => 'Manage Users',
+            'route' => 'manage.user',
+            'icon'=> 'fa-fw fas fa-users',
+        ],
+        [
+            'text' => 'Manage Rental',
+            'route' => 'manage.rental',
+            // 'icon'=> 'fa-fw fas fa-users',
+        ],
     ],
 
     /*
