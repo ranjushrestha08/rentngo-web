@@ -46,11 +46,19 @@ class ApiController extends Controller
 
     public function getVehiclesByCategory(Request $request)
     {
-        $item = Vehicle::where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
-        return response()->json([
-            'status' => true,
-            'data' => $item
-        ]);
+    $category = VehicleCategory::where('id',$request->category_id)->first();
+        if($category){
+            $item = Vehicle::where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
+            return response()->json([
+                'status' => true,
+                'data' => $item
+            ]);
+        }else{
+            return response()->json([
+                'status' => false,
+                'message' => "No such category found"
+            ]);
+        }
     }
 
     public function getVehicle($id)
@@ -107,7 +115,7 @@ class ApiController extends Controller
         } catch (\Exception $ex) {
             return response()->json([
                 'status' => false,
-                'message' => "Something went wrong"
+                'message' => $ex->getMessage()
             ]);
         }
     }
@@ -153,7 +161,7 @@ class ApiController extends Controller
         if ($rent) {
             if ($rent->user_id == auth('api')->user()->id) {
                 $rent->update([
-                    'rental_status' => $request->status,
+                    'rental_status' => $request->rental_status,
                 ]);
 
                 return response()->json([
@@ -185,6 +193,7 @@ class ApiController extends Controller
                     'drop_location_id' => $request->drop_location_id,
                     'pick_location_id' => $request->pick_location_id,
                     'vehicle_id' => $request->vehicle_id,
+                    'total_cost' => $request->total_cost,
                 ]);
 
                 return response()->json([

@@ -78,6 +78,36 @@ class AuthApiController extends Controller
 
     public function user(Request $request)
     {
-        return response()->json(['user' => $request->user(), 'status' => "success"]);
+        $user = auth('api')->user();
+        return response()->json(['user' => $user, 'status' => "success"]);
     }
+    public function updateProfile(Request $request)
+    {
+        $request->validate([
+            //add validation here
+        ]);     
+        $user = auth('api')->user();
+        $data = $request->all();
+        $user->update($data);
+        return response()->json(['user' => $user, 'status' => "success"]);
+    }
+
+   public function forgetPassword(Request $request){
+    $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Invalid User',
+                ],);
+            } else {
+
+                $user ->password = bcrypt($request->new_password);
+                $user ->update();
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Password Reset Successfully.'
+                ]);
+            }
+   }
 }

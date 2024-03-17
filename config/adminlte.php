@@ -317,12 +317,11 @@ return [
         ],
         [
             'text' => 'Manage Users',
-            'route' => 'manage.user',
+            'route' => 'users.index',
             'icon'=> 'fa-fw fas fa-users',
         ],
         [
             'text' => 'Manage Rental',
-            'route' => 'manage.rental',
             // 'icon'=> 'fa-fw fas fa-users',
         ],
     ],

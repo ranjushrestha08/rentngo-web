@@ -28,6 +28,8 @@ Route::post('login', [AuthApiController::class, 'login']);
 Route::middleware('auth:api')->group(function(){
     Route::post('logout', [AuthApiController::class, 'logout']);
     Route::get('user', [AuthApiController::class, 'user']);
+    Route::post('update-profile', [AuthApiController::class, 'updateProfile']);
+    Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
     // Route::get('vehicles', [ApiController::class, 'getAllVehicles']);
 
 
