@@ -12,7 +12,8 @@ class RentalController extends Controller
      */
     public function index()
     {
-        //
+        $rentals = Rental::all();
+        return view("rentals.index", compact("rentals"));
     }
 
     /**
@@ -34,32 +35,40 @@ class RentalController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Rental $rental)
+    public function show($id)
     {
-        //
+        $info['rental'] = Rental::findOrFail($id);
+        return view('rentals.show', $info);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Rental $rental)
+    public function edit( $id)
     {
-        //
+        
+        $info['rental'] = Rental::findOrFail($id);
+        return view('rentals.edit', $info);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Rental $rental)
+    public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+
+        ]);
+        $data = $request->all();
+        $Rental = Rental::findOrFail($id);
+        $Rental->update($data);
+        return redirect()->route('rentals.index')->with('success', 'Rental updated successfully!'); //
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rental $rental)
+    public function destroy($id)
     {
-        //
     }
 }

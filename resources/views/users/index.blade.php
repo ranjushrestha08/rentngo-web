@@ -28,6 +28,10 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td>{{ $user->phone }}</td>
+                            <td>{{ $user->status ?? 'Not Verified' }}</td>
+                             <td>
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>

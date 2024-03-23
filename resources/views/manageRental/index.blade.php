@@ -39,7 +39,7 @@
                             <td>{{ $rental->total_cost }}</td>
                             <td>{{ $rental->rental_status }}</td>
                             <td>
-                                <a class="mx-1" href="{{ route('vehicles.edit', $vehicle->id) }}"
+                                <a class="mx-1" href="{{ route('rentals.edit', $rental->id) }}"
                                     class="btn btn-warning btn-sm">Edit</a>
                             </td>
                         </tr>

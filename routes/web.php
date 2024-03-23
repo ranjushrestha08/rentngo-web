@@ -25,6 +25,6 @@ Route::middleware('auth')->group(function(){
     Route::resource('vehicles', App\Http\Controllers\VehicleController::class);
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
     Route::resource('/users', App\Http\Controllers\UserDetailsController::class)->except(['create', 'store', 'delete']);
-
+    Route::resource('/rentals', App\Http\Controllers\RentalController::class)->except(['create', 'store', 'delete']);
 });
 

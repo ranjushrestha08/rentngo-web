@@ -322,6 +322,7 @@ return [
         ],
         [
             'text' => 'Manage Rental',
+            'route' => 'rentals.index',
             // 'icon'=> 'fa-fw fas fa-users',
         ],
     ],

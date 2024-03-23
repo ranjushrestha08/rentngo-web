@@ -12,13 +12,6 @@ class AuthApiController extends Controller
     public function signup(Request $request)
     {
         // Validation logic here
-        // $request->validate([
-        //     'name' => 'required|string',
-        //     'email' => 'required|email|unique:users,email',
-        //     'phone' => 'required|string|unique:users,phone', 
-        //     'password' => 'required|min:8',
-        //     'role' => 'required|string'
-        // ]);
 
        $validator = Validator::make($request->all(), [
         'name' => 'required|string',
@@ -31,14 +24,7 @@ class AuthApiController extends Controller
          if ($validator->fails()) {
         return response()->json(['errors' => $validator->errors()], 422);
     }
-        // $user = User::create([
-        //     'name' => $request->name,
-        //     'email' => $request->email,
-        //     'phone' => $request->phone,
-        //     'password' => bcrypt($request->password),
-        //     'role' => $request->role,
-        // ]);
-        
+
  $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
