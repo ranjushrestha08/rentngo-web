@@ -18,6 +18,7 @@
                             <th>Name</th>
                             <th>Email</th>
                             <th>Phone</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -30,6 +31,8 @@
                             <td>{{ $user->phone }}</td>
                             <td>{{ $user->status ?? 'Not Verified' }}</td>
                              <td>
+                                 <a class="mx-1" href="{{ route('users.show', $user->id) }}"
+                                    class="btn btn-primary btn-sm">View</a>
                                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
                             </td>
                         </tr>

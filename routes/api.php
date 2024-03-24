@@ -42,6 +42,7 @@ Route::middleware('auth:api')->group(function(){
     Route::get('/user/rentals', [ApiController::class, 'getUserRentals']);
     Route::post('/user/update/rentals-status/{id}', [ApiController::class, 'updateRentalStatus']);
     Route::post('/user/update/rentals/{id}', [ApiController::class, 'updateRental']);
+    Route::post('/khalti/payment/verify', [ApiController::class, 'verifyPayment']);
 
 
 });

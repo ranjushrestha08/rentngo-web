@@ -13,7 +13,7 @@ class RentalController extends Controller
     public function index()
     {
         $rentals = Rental::all();
-        return view("rentals.index", compact("rentals"));
+        return view("manageRental.index", compact("rentals"));
     }
 
     /**
@@ -38,7 +38,7 @@ class RentalController extends Controller
     public function show($id)
     {
         $info['rental'] = Rental::findOrFail($id);
-        return view('rentals.show', $info);
+        return view('manageRental.show', $info);
     }
 
     /**
@@ -48,7 +48,7 @@ class RentalController extends Controller
     {
         
         $info['rental'] = Rental::findOrFail($id);
-        return view('rentals.edit', $info);
+        return view('manageRental.edit', $info);
     }
 
     /**
@@ -62,7 +62,7 @@ class RentalController extends Controller
         $data = $request->all();
         $Rental = Rental::findOrFail($id);
         $Rental->update($data);
-        return redirect()->route('rentals.index')->with('success', 'Rental updated successfully!'); //
+        return redirect()->route('manageRental.index')->with('success', 'Rental updated successfully!'); //
     }
 
     /**

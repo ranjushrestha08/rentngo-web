@@ -213,4 +213,34 @@ class ApiController extends Controller
             ]);
         }
     }
+
+    public function verifyPayment(Request $request){
+        $token = $request->token;
+        $amount = $request->amount;
+
+        $args = http_build_query(array(
+            'token' => $token,
+            'amount'  => $amount
+        ));
+
+        $url = "https://khalti.com/api/v2/payment/verify/";
+
+// Make the call using API.
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,$args);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+        $headers = ['Authorization: test_secret_key_b76acf9c6944411c90462f5fcc220707'];
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        // Response
+        $response = curl_exec($ch);
+        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $response;
+
+    }
 }
