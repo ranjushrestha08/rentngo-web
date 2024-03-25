@@ -62,7 +62,7 @@ class RentalController extends Controller
         $data = $request->all();
         $Rental = Rental::findOrFail($id);
         $Rental->update($data);
-        return redirect()->route('manageRental.index')->with('success', 'Rental updated successfully!'); //
+        return redirect()->route('rentals.index')->with('success', 'Rental updated successfully!'); //
     }
 
     /**

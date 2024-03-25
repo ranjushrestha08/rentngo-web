@@ -307,9 +307,9 @@ return [
             'text' => 'search',
         ],
         [
-            // 'text' => 'Dashboard',
-            // 'route' => 'dashboard.index',
-            // 'icon'=> 'fa-fw fas fa-truck-pickup',
+            'text' => 'Dashboard',
+            'route' => 'dashboard.index',
+            'icon'=> 'fa-fw fas fa-truck-pickup',
         ],
         [
             'text' => 'Vehicle List',

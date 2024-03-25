@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('license_no')->nullable();
             $table->string('citizenship_no')->nullable();
             $table->string('address')->nullable();
-    
+            $table->string('status')->nullable();
             $table->string('role');
             $table->rememberToken();
             $table->timestamps();

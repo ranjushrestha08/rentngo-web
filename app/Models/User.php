@@ -25,6 +25,7 @@ class User extends Authenticatable
         'address',
         'license_no',
         'citizenship_no',
+        'status',
         'role'
     ];
 
