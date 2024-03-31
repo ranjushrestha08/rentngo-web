@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Rental;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Vehicle;
@@ -31,6 +32,9 @@ class DashboardController extends Controller
         $info['totalOrders'] = Rental::count();
         $info['totalVehicles'] = Vehicle::count();
         $info['totalVehicleCategory'] = VehicleCategory::count();
-                return view('home', $info);
+        $info['rentals'] = Rental::where('start_date', '>', Carbon::today())
+            ->whereRentalStatus('Pending')->get();
+
+        return view('home', $info);
     }
 }

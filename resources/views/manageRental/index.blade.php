@@ -22,8 +22,8 @@
                                 <th>End Date</th>
                                 <th>Drop Location </th>
                                 <th>Pick Location</th>
-                                <th>Vehicle Id</th>
-                                <th>User Id</th>
+                                <th>Vehicle</th>
+                                <th>User</th>
                                 <th>Total Cost</th>
                                 <th>Rental Status</th>
                                 <th>Actions</th>
