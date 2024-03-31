@@ -31,7 +31,7 @@ class VehicleCategoryController extends Controller
     {
         //ad validation here
         $request->validate([
-
+            'name' => 'required|string|max:255'
         ]);
         $data = $request->all();
         $VehicleCategory = new VehicleCategory($data);
@@ -65,7 +65,7 @@ class VehicleCategoryController extends Controller
     {
         //add validation here
         $request->validate([
-
+            'name' => 'required|string|max:255'
         ]);
         $data = $request->all();
         $VehicleCategory = VehicleCategory::findOrFail($id);

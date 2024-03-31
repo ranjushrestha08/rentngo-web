@@ -312,14 +312,15 @@ return [
             'icon'=> 'fa-fw fas fa-truck-pickup',
         ],
         [
+            'text' => 'Vehicle Categories List',
+            'route' => 'vehicleCategories.index',
+        ],
+        [
             'text' => 'Vehicle List',
             'route' => 'vehicles.index',
             // 'icon'=> 'fa-fw fas fa-truck-pickup',
         ],
-        [
-            'text' => 'Vehicle Categories List',
-            'route' => 'vehicleCategories.index',
-        ],
+
         [
             'text' => 'Manage Users',
             'route' => 'users.index',
