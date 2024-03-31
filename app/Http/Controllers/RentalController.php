@@ -12,7 +12,7 @@ class RentalController extends Controller
      */
     public function index()
     {
-        $rentals = Rental::all();
+        $rentals = Rental::with(['user', 'vehicle', 'dropLocation', 'pickLocation'])->get();
         return view("manageRental.index", compact("rentals"));
     }
 
@@ -46,7 +46,7 @@ class RentalController extends Controller
      */
     public function edit( $id)
     {
-        
+
         $info['rental'] = Rental::findOrFail($id);
         return view('manageRental.edit', $info);
     }

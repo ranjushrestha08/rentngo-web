@@ -10,4 +10,9 @@ class VehicleCategory extends Model
     use HasFactory;
         protected $guarded = ['id'];
 
+    public function vehicles()
+    {
+        return $this->hasMany(Vehicle::class, 'vehicle_category_id');
+    }
+
 }
