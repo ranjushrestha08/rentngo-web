@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('rentals', function (Blueprint $table) {
             $table->id();            $table->date('start_date');
             $table->date('end_date');
-            $table->unsignedBigInteger('drop_location_id');
+            $table->unsignedBigInteger('drop_location_id')->nullable();
             $table->foreign('drop_location_id')->references('id')->on('locations');
-            $table->unsignedBigInteger('pick_location_id');
+            $table->unsignedBigInteger('pick_location_id')->nullable();
             $table->foreign('pick_location_id')->references('id')->on('locations');
             $table->unsignedBigInteger('vehicle_id');
             $table->foreign('vehicle_id')->references('id')->on('vehicles');

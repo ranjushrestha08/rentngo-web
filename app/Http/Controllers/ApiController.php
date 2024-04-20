@@ -31,7 +31,7 @@ class ApiController extends Controller
     //         'status'=> false,
     //         'message' => 'Vehicle'
     //     ]);
-        
+
     // }
 
 
@@ -102,6 +102,8 @@ class ApiController extends Controller
                     'user_id' =>  auth('api')->user()->id,
                     'total_cost' => $request->total_cost,
                     'rental_status' => "Pending",
+                    'latitude' => $request->lat,
+                    'longitude' => $request->lon
                 ]);
 
                 //if payment then save payment too.
@@ -194,6 +196,8 @@ class ApiController extends Controller
                     'pick_location_id' => $request->pick_location_id,
                     'vehicle_id' => $request->vehicle_id,
                     'total_cost' => $request->total_cost,
+                    'latitude' => $request->lat,
+                    'longitude' => $request->lon
                 ]);
 
                 return response()->json([
