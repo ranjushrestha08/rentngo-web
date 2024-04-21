@@ -65,7 +65,7 @@ class VehicleController extends Controller
      */
     public function show($id)
     {
-         $info['vehicle'] = Vehicle::findOrFail($id);
+        $info['vehicle'] = Vehicle::findOrFail($id);
         return view('vehicles.show', $info);
     }
 
@@ -74,25 +74,46 @@ class VehicleController extends Controller
      */
     public function edit($id)
     {
-       $info['vehicle'] = Vehicle::findOrFail($id);
-               $info['categories'] = VehicleCategory::all();
+        $info['vehicle'] = Vehicle::findOrFail($id);
+        $info['categories'] = VehicleCategory::all();
 
         return view('vehicles.edit', $info);
     }
+
 
     /**
      * Update the specified resource in storage.
      */
     public function update(Request $request, $id)
     {
-       $request->validate([
-
+        $request->validate([
+            'fuel_type' => 'required|string',
+            'vehicle_name' => 'required|string',
+            'model' => 'required|string',
+            'cost_per_hour' => 'required|string',
+            'image_url' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg,webp|max:4048', // Change to nullable
+            'vehicle_category_id' => 'required|exists:vehicle_categories,id',
+            'vehicle_description' => 'required|string',
         ]);
-        $data = $request->all();
-        $Vehicle = Vehicle::findOrFail($id);
-        $Vehicle->update($data);
-        return redirect()->route('vehicles.index')->with('success', 'Vehicle updated successfully!');
+
+        $vehicle = Vehicle::findOrFail($id);
+        $vehicle->fuel_type = $request->input('fuel_type');
+        $vehicle->vehicle_name = $request->input('vehicle_name');
+        $vehicle->model = $request->input('model');
+        $vehicle->cost_per_hour = $request->input('cost_per_hour');
+        $vehicle->vehicle_category_id = $request->input('vehicle_category_id');
+        $vehicle->vehicle_description = $request->input('vehicle_description');
+
+        if ($request->hasFile('image_url')) {
+            Storage::delete($vehicle->image_url);
+
+            $imagePath = $request->file('image_url')->store('vehicle_images', 'public');
+            $vehicle->image_url = Storage::url($imagePath);
+        }
+        $vehicle->save();
+        return redirect()->route('vehicles.index')->with('success', 'Vehicle updated successfully');
     }
+
 
     /**
      * Remove the specified resource from storage.

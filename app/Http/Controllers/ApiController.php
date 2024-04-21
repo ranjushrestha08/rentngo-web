@@ -96,14 +96,12 @@ class ApiController extends Controller
                 $rent = new Rental([
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
-                    'drop_location_id' => $request->drop_location_id,
-                    'pick_location_id' => $request->pick_location_id,
                     'vehicle_id' => $request->vehicle_id,
                     'user_id' =>  auth('api')->user()->id,
                     'total_cost' => $request->total_cost,
                     'rental_status' => "Pending",
-                    'latitude' => $request->lat,
-                    'longitude' => $request->lon
+                    'latlon' => $request->latlon,
+
                 ]);
 
                 //if payment then save payment too.
@@ -192,12 +190,10 @@ class ApiController extends Controller
                 $rent->update([
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
-                    'drop_location_id' => $request->drop_location_id,
-                    'pick_location_id' => $request->pick_location_id,
                     'vehicle_id' => $request->vehicle_id,
+                    'user_id' =>  auth('api')->user()->id,
                     'total_cost' => $request->total_cost,
-                    'latitude' => $request->lat,
-                    'longitude' => $request->lon
+                    'latlon' => $request->latlon,
                 ]);
 
                 return response()->json([

@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('rentals', function (Blueprint $table) {
-            $table->string('latitude')->nullable();
-            $table->string('longitude')->nullable();
+            $table->string('latlon')->nullable();
         });
     }
 
@@ -23,9 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('rentals', function (Blueprint $table) {
-            $table->dropColumn('latitude');
-            $table->dropColumn('longitude');
-
+            $table->dropColumn('latlon');
         });
     }
 };
