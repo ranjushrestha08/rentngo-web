@@ -61,7 +61,7 @@ class AuthApiController extends Controller
 
                 return response()->json(['status' => true, 'data' => $user, 'token' => $token], 200);
             }
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json(['status'=>false, 'message' => 'Invalid credentials'], 401);
         } catch
         (\Exception $e) {
             return response()->json(['status'=> false, 'message'=>$e->getMessage()]);
