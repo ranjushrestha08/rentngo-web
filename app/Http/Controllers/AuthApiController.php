@@ -40,9 +40,8 @@ class AuthApiController extends Controller
 
         $token = $user->createToken('auth_token')->accessToken;
 
-        $user['token'] = $token;
 
-        return response()->json(['status' => true, 'data' => $user], 200);
+        return response()->json(['status' => true, 'data' => $user, 'token' => $token], 200);
     }
 
     public function login(Request $request)
@@ -57,10 +56,10 @@ class AuthApiController extends Controller
                 $user = Auth::user();
                 $token = $user->createToken('auth_token')->accessToken;
 
-                $user['token'] = $token;
+//                $user['token'] = $token;
 
 
-                return response()->json(['status' => true, 'data' => $user], 200);
+                return response()->json(['status' => true, 'data' => $user, 'token' => $token], 200);
             }
             return response()->json(['message' => 'Invalid credentials'], 401);
         } catch
