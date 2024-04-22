@@ -28,10 +28,11 @@ Route::post('login', [AuthApiController::class, 'login']);
 Route::middleware('auth:api')->group(function(){
     Route::post('logout', [AuthApiController::class, 'logout']);
     Route::get('user', [AuthApiController::class, 'user']);
-    Route::post('update-profile', [AuthApiController::class, 'updateProfile']);
-    Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
+//    Route::post('update-profile', [AuthApiController::class, 'updateProfile']);
+//    Route::post('forget-password', [AuthApiController::class, 'forgetPassword']);
     // Route::get('vehicles', [ApiController::class, 'getAllVehicles']);
-
+    Route::post('change-password', [AuthApiController::class, 'changePassword']);
+    Route::post('update-profile', [AuthApiController::class, 'updateProfile']);
 
     Route::get('/getVehicles', [ApiController::class, 'getVehicles']);
     Route::get('/getVehiclesByCategory', [ApiController::class, 'getVehiclesByCategory']);
@@ -46,3 +47,10 @@ Route::middleware('auth:api')->group(function(){
 
 
 });
+
+
+Route::post('forgot-password', [AuthApiController::class, 'forgotPassword']);
+Route::post('verify-otp', [AuthApiController::class, 'verifyOTP']);
+Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
+
+
