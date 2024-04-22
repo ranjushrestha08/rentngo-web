@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\VehicleCategoryResource;
+use App\Http\Resources\VehicleResource;
 use App\Models\Rental;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
@@ -9,35 +11,9 @@ use App\Models\VehicleCategory;
 
 class ApiController extends Controller
 {
-    // function getAllVehicles(Request $request)
-    // {
-    //     $data = Vehicle::orderby('çreated_at', 'desc')->get();
-    //     return response()->json([
-    //         'status'=> true,
-    //         'data' => $data
-    //     ]);
-    // }
-
-    // function getVehicleById($id){
-    //     $data = Vehicle::whereId($id)->first();
-    //     if($data)
-    //     {
-    //         return response()->json([
-    //         'status'=> true,
-    //         'data' => $data
-    //     ]);
-    //     }
-    //     return response()->json([
-    //         'status'=> false,
-    //         'message' => 'Vehicle'
-    //     ]);
-
-    // }
-
-
     public function getVehicles()
     {
-        $item = Vehicle::inRandomOrder()->get();
+        $item = Vehicle::with(['category'])->inRandomOrder()->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -46,14 +22,14 @@ class ApiController extends Controller
 
     public function getVehiclesByCategory(Request $request)
     {
-    $category = VehicleCategory::where('id',$request->category_id)->first();
-        if($category){
+        $category = VehicleCategory::where('id', $request->category_id)->first();
+        if ($category) {
             $item = Vehicle::where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
             return response()->json([
                 'status' => true,
                 'data' => $item
             ]);
-        }else{
+        } else {
             return response()->json([
                 'status' => false,
                 'message' => "No such category found"
@@ -72,7 +48,7 @@ class ApiController extends Controller
 
     public function getCategories()
     {
-        $item = VehicleCategory::orderBy('name', 'asc')->get();
+        $item = VehicleCategory::with(['vehicles'])->orderBy('name', 'asc')->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -97,7 +73,7 @@ class ApiController extends Controller
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
                     'vehicle_id' => $request->vehicle_id,
-                    'user_id' =>  auth('api')->user()->id,
+                    'user_id' => auth('api')->user()->id,
                     'total_cost' => $request->total_cost,
                     'rental_status' => "Pending",
                     'latlon' => $request->latlon,
@@ -191,7 +167,7 @@ class ApiController extends Controller
                     'start_date' => $request->start_date,
                     'end_date' => $request->end_date,
                     'vehicle_id' => $request->vehicle_id,
-                    'user_id' =>  auth('api')->user()->id,
+                    'user_id' => auth('api')->user()->id,
                     'total_cost' => $request->total_cost,
                     'latlon' => $request->latlon,
                 ]);
@@ -214,13 +190,14 @@ class ApiController extends Controller
         }
     }
 
-    public function verifyPayment(Request $request){
+    public function verifyPayment(Request $request)
+    {
         $token = $request->token;
         $amount = $request->amount;
 
         $args = http_build_query(array(
             'token' => $token,
-            'amount'  => $amount
+            'amount' => $amount
         ));
 
         $url = "https://khalti.com/api/v2/payment/verify/";
@@ -229,7 +206,7 @@ class ApiController extends Controller
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS,$args);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $args);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 
         $headers = ['Authorization: test_secret_key_b76acf9c6944411c90462f5fcc220707'];
