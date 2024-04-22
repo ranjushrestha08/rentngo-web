@@ -99,7 +99,7 @@ class ApiController extends Controller
 
     public function getUserRentalDetails($id)
     {
-        $rent = Rental::where('id', $id)->first();
+        $rent = Rental::with(['payment'])->where('id', $id)->first();
         if ($rent) {
             if ($rent->user_id == auth('api')->user()->id) {
 
@@ -123,7 +123,7 @@ class ApiController extends Controller
 
     public function getUserRentals()
     {
-        $rent = Rental::where('user_id', auth('api')->user()->id)->get();
+        $rent = Rental::with(['payment'])->where('user_id', auth('api')->user()->id)->get();
 
         return response()->json([
             'status' => true,
