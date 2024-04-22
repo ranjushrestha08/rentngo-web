@@ -21,5 +21,7 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'password' => bcrypt('admin123')
         ]);
+
+        $this->call(VehicleCategorySeeder::class);
     }
 }
