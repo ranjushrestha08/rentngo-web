@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\VehicleCategoryResource;
-use App\Http\Resources\VehicleResource;
+
+use App\Models\Payment;
 use App\Models\Rental;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
@@ -58,10 +59,10 @@ class ApiController extends Controller
     public function rentVehicle(Request $request)
     {
         try {
-            $data = Rental::where('user_id', auth('api')->user()->id)
+            $data = Rental::with(['vehicle'])->where('user_id', auth('api')->user()->id)
                 ->where('vehicle_id', $request->vehicle_id)
                 ->where('start_date', $request->start_date)
-                ->where('end_date', $request->start_date)
+                ->where('end_date', $request->end_date)
                 ->first();
             if ($data) {
                 return response()->json([
@@ -85,7 +86,7 @@ class ApiController extends Controller
 
                 return response()->json([
                     'status' => true,
-                    'data' => $rent
+                    'data' => $rent->load('vehicle')
                 ]);
             }
         } catch (\Exception $ex) {
@@ -218,6 +219,48 @@ class ApiController extends Controller
         curl_close($ch);
 
         return $response;
+    }
 
+    public function checkout(Request $request)
+    {
+        $validate = $request->validate([
+            'reference_id' => 'required',
+            'amount' => 'required',
+            'payment_status' => 'required'
+        ]);
+
+        try {
+
+            $rent = new Rental([
+                'start_date' => $request->start_date,
+                'end_date' => $request->end_date,
+                'vehicle_id' => $request->vehicle_id,
+                'user_id' => auth('api')->user()->id,
+                'total_cost' => $request->total_cost,
+                'rental_status' => "Pending",
+                'latlon' => $request->latlon,
+            ]);
+
+            //if payment then save payment too.
+            $rent->save();
+            $payment = Payment::create([
+                'reference_id' => $request->reference_id,
+                'payment_amount' => $request->amount,
+                'payment_status' => $request->payment_status,
+                'payment_date' => Carbon::now(),
+                'rental_id' => $rent->id
+            ]);
+
+            return response()->json([
+                'status' => true,
+                'data' => $rent->load(['vehicle', 'payment'])
+            ]);
+
+        } catch (\Exception $ex) {
+            return response()->json([
+                'status' => false,
+                'message' => $ex->getMessage()
+            ]);
+        }
     }
 }

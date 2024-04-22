@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
-            $table ->integer("transcation_code");
             $table ->double("payment_amount");
             $table ->string("payment_status");
             $table ->date("payment_date");

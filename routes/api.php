@@ -34,21 +34,22 @@ Route::middleware('auth:api')->group(function(){
     Route::post('change-password', [AuthApiController::class, 'changePassword']);
     Route::post('update-profile', [AuthApiController::class, 'updateProfile']);
 
-    Route::get('/getVehicles', [ApiController::class, 'getVehicles']);
-    Route::get('/getVehiclesByCategory', [ApiController::class, 'getVehiclesByCategory']);
-    Route::get('/getVehicleDetail/{id}', [ApiController::class, 'getVehicle']);
-    Route::get('/getCategories', [ApiController::class, 'getCategories']);
+
     Route::post('/rent/vehicle', [ApiController::class, 'rentVehicle']);
     Route::get('/rent-user-details/{id}', [ApiController::class, 'getUserRentalDetails']);
     Route::get('/user/rentals', [ApiController::class, 'getUserRentals']);
     Route::post('/user/update/rentals-status/{id}', [ApiController::class, 'updateRentalStatus']);
     Route::post('/user/update/rentals/{id}', [ApiController::class, 'updateRental']);
     Route::post('/khalti/payment/verify', [ApiController::class, 'verifyPayment']);
+    Route::post('checkout', [ApiController::class, 'checkout']);
 
 
 });
 
-
+Route::get('/getVehicles', [ApiController::class, 'getVehicles']);
+Route::get('/getVehiclesByCategory', [ApiController::class, 'getVehiclesByCategory']);
+Route::get('/getVehicleDetail/{id}', [ApiController::class, 'getVehicle']);
+Route::get('/getCategories', [ApiController::class, 'getCategories']);
 Route::post('forgot-password', [AuthApiController::class, 'forgotPassword']);
 Route::post('verify-otp', [AuthApiController::class, 'verifyOTP']);
 Route::post('reset-password', [AuthApiController::class, 'resetPassword']);
