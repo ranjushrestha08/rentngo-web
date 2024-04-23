@@ -309,7 +309,7 @@ return [
         [
             'text' => 'Dashboard',
             'route' => 'dashboard.index',
-            'icon'=> 'fa-fw fas fa-truck-pickup',
+           
         ],
         [
             'text' => 'Vehicle Categories List',
@@ -318,18 +318,18 @@ return [
         [
             'text' => 'Vehicle List',
             'route' => 'vehicles.index',
-            // 'icon'=> 'fa-fw fas fa-truck-pickup',
+            
         ],
 
         [
             'text' => 'Manage Users',
             'route' => 'users.index',
-            'icon'=> 'fa-fw fas fa-users',
+            
         ],
         [
             'text' => 'Manage Rental',
             'route' => 'rentals.index',
-            // 'icon'=> 'fa-fw fas fa-users',
+           
         ],
     ],
 
