@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\VerificationHelpers;
+use App\Notifications\SendOtp;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -66,6 +67,7 @@ class AuthApiController extends Controller
         (\Exception $e) {
             return response()->json(['status'=> false, 'message'=>$e->getMessage()]);
         }
+
 
     }
 
@@ -173,6 +175,7 @@ class AuthApiController extends Controller
             $user->temp_token = $temp_token;
             $user->save();
 
+            $user->notify(new SendOtp($user));
 //            Mail::to($user->email)->send(new \App\Mail\SendOTP($user));
 
             return response()->json(['status' => true, 'data' =>[
