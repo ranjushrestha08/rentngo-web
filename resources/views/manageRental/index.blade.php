@@ -20,8 +20,6 @@
                                 <th>ID</th>
                                 <th>Start Date</th>
                                 <th>End Date</th>
-                                <th>Drop Location </th>
-                                <th>Pick Location</th>
                                 <th>Vehicle</th>
                                 <th>User</th>
                                 <th>Total Cost</th>
@@ -35,8 +33,6 @@
                                     <td>{{ $rental->id }}</td>
                                     <td>{{ $rental->start_date }}</td>
                                     <td>{{ $rental->end_date }}</td>
-                                    <td>{{ $rental->dropLocation?->address }}</td>
-                                    <td>{{ $rental->pickLocation?->address }}</td>
                                     <td>{{ $rental->vehicle?->vehicle_name }}</td>
                                     <td>{{ $rental->user?->name }}</td>
                                     <td>{{ $rental->total_cost }}</td>

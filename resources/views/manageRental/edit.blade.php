@@ -34,25 +34,22 @@
                         <input type="text" class="form-control" id="end_date" name="end_date"
                                value="{{ $rental->end_date }}" readonly>
                     </div>
+
                     <div class="form-group">
-                        <label for="drop_location_id">Drop Location ID:</label>
-                        <input type="text" class="form-control" id="drop_location_id" name="drop_location_id"
-                               value="{{ $rental->drop_location_id }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="pick_location_id">Pick Location ID:</label>
-                        <input type="text" class="form-control" id="pick_location_id" name="pick_location_id"
-                               value="{{ $rental->pick_location_id }}" readonly>
-                    </div>
-                    <div class="form-group">
-                        <label for="vehicle_id">Vehicle ID:</label>
+                        <label for="vehicle_id">Vehicle:</label>
                         <input type="text" class="form-control" id="vehicle_id" name="vehicle_id"
-                               value="{{ $rental->vehicle_id }}" readonly>
+                               value="{{ $rental?->vehicle?->vehicle_name }}" readonly>
                     </div>
                     <div class="form-group">
-                        <label for="user_id">User ID:</label>
+                        <label for="user_id">User:</label>
                         <input type="text" class="form-control" id="user_id" name="user_id"
-                               value="{{ $rental->user_id }}" readonly>
+                               value="{{ $rental?->user?->name }}" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user_id">Location(In LatLon):</label>
+                        <input type="text" class="form-control" id="user_id" name="user_id"
+                               value="{{ $rental->latlon }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="total_cost">Total Cost:</label>
