@@ -3,18 +3,25 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Resources\RentalResource;
+use App\Models\Location;
 use App\Models\Payment;
 use App\Models\Rental;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ApiController extends Controller
 {
     public function getVehicles()
     {
-        $item = Vehicle::with(['category'])->inRandomOrder()->get();
+
+        $item = QueryBuilder::for(Vehicle::class)
+            ->allowedFilters(['vehicle_name'])
+            ->with(['category'])->inRandomOrder()->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -25,7 +32,9 @@ class ApiController extends Controller
     {
         $category = VehicleCategory::where('id', $request->category_id)->first();
         if ($category) {
-            $item = Vehicle::where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
+            $item = QueryBuilder::for(Vehicle::class)
+                ->allowedFilters(['vehicle_name'])
+                ->where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
             return response()->json([
                 'status' => true,
                 'data' => $item
@@ -49,7 +58,9 @@ class ApiController extends Controller
 
     public function getCategories()
     {
-        $item = VehicleCategory::with(['vehicles'])->orderBy('name', 'asc')->get();
+        $item = QueryBuilder::for(VehicleCategory::class)
+            ->allowedFilters(['name'])
+            ->with(['vehicles'])->orderBy('name', 'asc')->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -123,105 +134,151 @@ class ApiController extends Controller
 
     public function getUserRentals()
     {
-        $rent = Rental::with(['payment'])->where('user_id', auth('api')->user()->id)->get();
+        $rent = QueryBuilder::for(Rental::class)
+            ->join('vehicles', 'vehicles.id', 'rentals.vehicle_id')
+            ->allowedFilters([AllowedFilter::scope('name')])
+            ->with(['dropLocation', 'pickLocation', 'payment'])->where('user_id', auth('api')->user()->id)->get();
 
         return response()->json([
             'status' => true,
-            'data' => $rent
+            'data' => RentalResource::collection($rent)
         ]);
 
     }
 
     public function updateRentalStatus(Request $request, $id)
     {
-        $rent = Rental::where('id', $id)->first();
-        if ($rent) {
-            if ($rent->user_id == auth('api')->user()->id) {
-                $rent->update([
-                    'rental_status' => $request->rental_status,
-                ]);
+        try {
+            $rent = Rental::where('id', $id)->first();
+            if ($rent) {
+                if ($rent->user_id == auth('api')->user()->id) {
+                    $rent->update([
+                        'rental_status' => $request->rental_status,
+                    ]);
 
-                return response()->json([
-                    'status' => true,
-                    'data' => $rent
-                ]);
+                    return response()->json([
+                        'status' => true,
+                        'data' => $rent
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Unauthorized access"
+                    ]);
+                }
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => "Unauthorized access"
+                    'message' => "Order not found"
                 ]);
             }
-        } else {
+        } catch (\Exception $ex) {
             return response()->json([
                 'status' => false,
-                'message' => "Order not found"
+                'message' => $ex->getMessage()
             ]);
         }
+
     }
 
     public function updateRental(Request $request, $id)
     {
-        $rent = Rental::where('id', $id)->first();
-        if ($rent) {
-            if ($rent->user_id == auth('api')->user()->id) {
-                $rent->update([
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'vehicle_id' => $request->vehicle_id,
-                    'user_id' => auth('api')->user()->id,
-                    'total_cost' => $request->total_cost,
-                    'latlon' => $request->latlon,
-                ]);
 
-                return response()->json([
-                    'status' => true,
-                    'data' => $rent
-                ]);
+        try {
+            $data = $request->all();
+            $rent = Rental::where('id', $id)->first();
+            if ($rent) {
+                if ($rent->user_id == auth('api')->user()->id) {
+
+                    if ($rent->status != "Pending") {
+                        return response()->json(['status' => false, 'message' => 'This order cannot be updated']);
+                    }
+                    if ($request->drop) {
+                        $drop_location_name = $request->drop['location_name'];
+                        $drop_lat_lon = explode(' ', $request->drop['latlon']);
+
+
+                        $drop_location = Location::firstOrCreate([
+                            'name' => $drop_location_name,
+                            'latitude' => $drop_lat_lon[0],
+                            'longitude' => $drop_lat_lon[1],
+                        ]);
+
+                        $data['drop_location_id'] = $drop_location->id;
+                    }
+
+                    if ($request->pickup) {
+                        $pickup_location_name = $request->pickup['location_name'];
+                        $pickup_lat_lon = explode(' ', $request->pickup['latlon']);
+
+                        $pickup_location = Location::firstOrCreate([
+                            'name' => $pickup_location_name,
+                            'latitude' => $pickup_lat_lon[0],
+                            'longitude' => $pickup_lat_lon[1],
+                        ]);
+                        $data['pick_location_id'] = $pickup_location->id;
+
+                    }
+                    $rent->update($data);
+                    $rent = $rent->load(['vehicle', 'payment']);
+
+                    return response()->json([
+                        'status' => true,
+                        'data' => new RentalResource($rent)
+                    ]);
+                } else {
+                    return response()->json([
+                        'status' => false,
+                        'message' => "Unauthorized access"
+                    ]);
+                }
             } else {
                 return response()->json([
                     'status' => false,
-                    'message' => "Unauthorized access"
+                    'message' => "Order not found"
                 ]);
             }
-        } else {
+        } catch (\Exception $ex) {
             return response()->json([
                 'status' => false,
-                'message' => "Order not found"
+                'message' => $ex->getMessage()
             ]);
         }
     }
 
-    public function verifyPayment(Request $request)
-    {
-        $token = $request->token;
-        $amount = $request->amount;
+//    public
+//    function verifyPayment(Request $request)
+//    {
+//        $token = $request->token;
+//        $amount = $request->amount;
+//
+//        $args = http_build_query(array(
+//            'token' => $token,
+//            'amount' => $amount
+//        ));
+//
+//        $url = "https://khalti.com/api/v2/payment/verify/";
+//
+//// Make the call using API.
+//        $ch = curl_init();
+//        curl_setopt($ch, CURLOPT_URL, $url);
+//        curl_setopt($ch, CURLOPT_POST, 1);
+//        curl_setopt($ch, CURLOPT_POSTFIELDS, $args);
+//        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+//
+//        $headers = ['Authorization: test_secret_key_b76acf9c6944411c90462f5fcc220707'];
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+//
+//        // Response
+//        $response = curl_exec($ch);
+//        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+//        curl_close($ch);
+//
+//        return $response;
+//    }
 
-        $args = http_build_query(array(
-            'token' => $token,
-            'amount' => $amount
-        ));
-
-        $url = "https://khalti.com/api/v2/payment/verify/";
-
-// Make the call using API.
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $args);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-
-        $headers = ['Authorization: test_secret_key_b76acf9c6944411c90462f5fcc220707'];
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-        // Response
-        $response = curl_exec($ch);
-        $status_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        return $response;
-    }
-
-    public function checkout(Request $request)
+    public
+    function checkout(Request $request)
     {
         $validate = $request->validate([
             'reference_id' => 'required',
@@ -231,6 +288,23 @@ class ApiController extends Controller
 
         try {
 
+            $drop_location_name = $request->drop['location_name'];
+            $pickup_location_name = $request->pickup['location_name'];
+            $drop_lat_lon = explode(' ', $request->drop['latlon']);
+            $pickup_lat_lon = explode(' ', $request->pickup['latlon']);
+
+
+            $drop_location = Location::firstOrCreate([
+                'name' => $drop_location_name,
+                'latitude' => $drop_lat_lon[0],
+                'longitude' => $drop_lat_lon[1],
+            ]);
+            $pickup_location = Location::firstOrCreate([
+                'name' => $pickup_location_name,
+                'latitude' => $pickup_lat_lon[0],
+                'longitude' => $pickup_lat_lon[1],
+            ]);
+
             $rent = new Rental([
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
@@ -238,7 +312,8 @@ class ApiController extends Controller
                 'user_id' => auth('api')->user()->id,
                 'total_cost' => $request->total_cost,
                 'rental_status' => "Pending",
-                'latlon' => $request->latlon,
+                'drop_location_id' => $drop_location->id,
+                'pick_location_id' => $pickup_location->id,
             ]);
 
             //if payment then save payment too.
@@ -251,9 +326,10 @@ class ApiController extends Controller
                 'rental_id' => $rent->id
             ]);
 
+            $rent = $rent->load(['vehicle', 'payment']);
             return response()->json([
                 'status' => true,
-                'data' => $rent->load(['vehicle', 'payment'])
+                'data' => new RentalResource($rent)
             ]);
 
         } catch (\Exception $ex) {
