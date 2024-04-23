@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 
+use App\Http\Resources\RentalResource;
+use App\Models\Location;
 use App\Models\Payment;
 use App\Models\Rental;
 use Carbon\Carbon;
@@ -231,6 +233,23 @@ class ApiController extends Controller
 
         try {
 
+            $drop_location_name = $request->drop['location_name'];
+            $pickup_location_name = $request->pickup['location_name'];
+            $drop_lat_lon = explode(' ',$request->drop['latlon']);
+            $pickup_lat_lon = explode(' ',$request->pickup['latlon']);
+
+
+            $drop_location = Location::firstOrCreate([
+                'name' => $drop_location_name,
+                'latitude' => $drop_lat_lon[0],
+                'longitude' => $drop_lat_lon[1],
+            ]);
+            $pickup_location = Location::firstOrCreate([
+                'name' => $pickup_location_name,
+                'latitude' => $pickup_lat_lon[0],
+                'longitude' => $pickup_lat_lon[1],
+            ]);
+
             $rent = new Rental([
                 'start_date' => $request->start_date,
                 'end_date' => $request->end_date,
@@ -238,7 +257,8 @@ class ApiController extends Controller
                 'user_id' => auth('api')->user()->id,
                 'total_cost' => $request->total_cost,
                 'rental_status' => "Pending",
-                'latlon' => $request->latlon,
+                'drop_location_id' => $drop_location->id,
+                'pick_location_id' => $pickup_location->id,
             ]);
 
             //if payment then save payment too.
@@ -251,9 +271,10 @@ class ApiController extends Controller
                 'rental_id' => $rent->id
             ]);
 
+            $rent = $rent->load(['vehicle', 'payment']);
             return response()->json([
                 'status' => true,
-                'data' => $rent->load(['vehicle', 'payment'])
+                'data' => new RentalResource($rent)
             ]);
 
         } catch (\Exception $ex) {
