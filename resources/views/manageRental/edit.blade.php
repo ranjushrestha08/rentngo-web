@@ -47,9 +47,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="user_id">Location(In LatLon):</label>
+                        <label for="user_id">Drop Location:</label>
                         <input type="text" class="form-control" id="user_id" name="user_id"
-                               value="{{ $rental->latlon }}" readonly>
+                               value="{{ $rental->dropLocation->name }}" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_id">Pickup Location:</label>
+                        <input type="text" class="form-control" id="user_id" name="user_id"
+                               value="{{ $rental->dropLocation->name }}" readonly>
                     </div>
                     <div class="form-group">
                         <label for="total_cost">Total Cost:</label>

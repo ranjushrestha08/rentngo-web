@@ -163,21 +163,46 @@ class ApiController extends Controller
 
     public function updateRental(Request $request, $id)
     {
+        $data = $request->all();
         $rent = Rental::where('id', $id)->first();
         if ($rent) {
             if ($rent->user_id == auth('api')->user()->id) {
-                $rent->update([
-                    'start_date' => $request->start_date,
-                    'end_date' => $request->end_date,
-                    'vehicle_id' => $request->vehicle_id,
-                    'user_id' => auth('api')->user()->id,
-                    'total_cost' => $request->total_cost,
-                    'latlon' => $request->latlon,
-                ]);
+
+                if($rent->status != "Pending") {
+                    return response()->json(['status' => false, 'message' => 'This order cannot be updated']);
+                }
+                if ($request->drop) {
+                    $drop_location_name = $request->drop['location_name'];
+                    $drop_lat_lon = explode(' ', $request->drop['latlon']);
+
+
+                    $drop_location = Location::firstOrCreate([
+                        'name' => $drop_location_name,
+                        'latitude' => $drop_lat_lon[0],
+                        'longitude' => $drop_lat_lon[1],
+                    ]);
+
+                    $data['drop_location_id'] = $drop_location->id;
+                }
+
+                if ($request->pickup) {
+                    $pickup_location_name = $request->pickup['location_name'];
+                    $pickup_lat_lon = explode(' ', $request->pickup['latlon']);
+
+                    $pickup_location = Location::firstOrCreate([
+                        'name' => $pickup_location_name,
+                        'latitude' => $pickup_lat_lon[0],
+                        'longitude' => $pickup_lat_lon[1],
+                    ]);
+                    $data['pick_location_id'] = $pickup_location->id;
+
+                }
+                $rent->update($data);
+                $rent = $rent->load(['vehicle', 'payment']);
 
                 return response()->json([
                     'status' => true,
-                    'data' => $rent
+                    'data' => new RentalResource($rent)
                 ]);
             } else {
                 return response()->json([
@@ -193,7 +218,8 @@ class ApiController extends Controller
         }
     }
 
-    public function verifyPayment(Request $request)
+    public
+    function verifyPayment(Request $request)
     {
         $token = $request->token;
         $amount = $request->amount;
@@ -223,7 +249,8 @@ class ApiController extends Controller
         return $response;
     }
 
-    public function checkout(Request $request)
+    public
+    function checkout(Request $request)
     {
         $validate = $request->validate([
             'reference_id' => 'required',
@@ -235,8 +262,8 @@ class ApiController extends Controller
 
             $drop_location_name = $request->drop['location_name'];
             $pickup_location_name = $request->pickup['location_name'];
-            $drop_lat_lon = explode(' ',$request->drop['latlon']);
-            $pickup_lat_lon = explode(' ',$request->pickup['latlon']);
+            $drop_lat_lon = explode(' ', $request->drop['latlon']);
+            $pickup_lat_lon = explode(' ', $request->pickup['latlon']);
 
 
             $drop_location = Location::firstOrCreate([
