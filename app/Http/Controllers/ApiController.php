@@ -11,6 +11,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\VehicleCategory;
+use Spatie\QueryBuilder\AllowedFilter;
+use Spatie\QueryBuilder\QueryBuilder;
 
 class ApiController extends Controller
 {
@@ -125,7 +127,10 @@ class ApiController extends Controller
 
     public function getUserRentals()
     {
-        $rent = Rental::with(['dropLocation', 'pickLocation', 'payment'])->where('user_id', auth('api')->user()->id)->get();
+        $rent = QueryBuilder::for(Rental::class)
+            ->join('vehicles', 'vehicles.id', 'rentals.vehicle_id')
+            ->allowedFilters([AllowedFilter::scope('name')])
+            ->with(['dropLocation', 'pickLocation', 'payment'])->where('user_id', auth('api')->user()->id)->get();
 
         return response()->json([
             'status' => true,

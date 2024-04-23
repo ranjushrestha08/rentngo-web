@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -35,5 +36,11 @@ class Rental extends Model
         return $this->hasOne(Payment::class);
     }
 
+    public function scopeName(Builder $query, $name): Builder
+    {
+        return $query->whereHas('vehicle', function ($query) use ($name){
+            $query->where('vehicle_name', 'like', '%'.$name.'%');
+        });
+    }
 
 }
