@@ -18,7 +18,10 @@ class ApiController extends Controller
 {
     public function getVehicles()
     {
-        $item = Vehicle::with(['category'])->inRandomOrder()->get();
+
+        $item = QueryBuilder::for(Vehicle::class)
+            ->allowedFilters(['vehicle_name'])
+            ->with(['category'])->inRandomOrder()->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -29,7 +32,9 @@ class ApiController extends Controller
     {
         $category = VehicleCategory::where('id', $request->category_id)->first();
         if ($category) {
-            $item = Vehicle::where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
+            $item = QueryBuilder::for(Vehicle::class)
+                ->allowedFilters(['vehicle_name'])
+                ->where('vehicle_category_id', $request->category_id)->inRandomOrder()->get();
             return response()->json([
                 'status' => true,
                 'data' => $item
@@ -53,7 +58,9 @@ class ApiController extends Controller
 
     public function getCategories()
     {
-        $item = VehicleCategory::with(['vehicles'])->orderBy('name', 'asc')->get();
+        $item = QueryBuilder::for(VehicleCategory::class)
+            ->allowedFilters(['name'])
+            ->with(['vehicles'])->orderBy('name', 'asc')->get();
         return response()->json([
             'status' => true,
             'data' => $item
@@ -165,8 +172,7 @@ class ApiController extends Controller
                     'message' => "Order not found"
                 ]);
             }
-        }catch (\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             return response()->json([
                 'status' => false,
                 'message' => $ex->getMessage()
@@ -232,8 +238,7 @@ class ApiController extends Controller
                     'message' => "Order not found"
                 ]);
             }
-        }catch (\Exception $ex)
-        {
+        } catch (\Exception $ex) {
             return response()->json([
                 'status' => false,
                 'message' => $ex->getMessage()
